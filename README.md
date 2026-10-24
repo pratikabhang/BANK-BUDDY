@@ -1,11 +1,11 @@
-# 🎓 Student Management System
+# 🏦 BANK-BUDDY
 
-> A lightweight Python CLI application for managing student records with CSV-based storage and essential record management operations.
+> A Java-based banking management system that simulates account operations, balance management, transaction tracking, and account controls through an interactive command-line interface.
 
-![Python](https://img.shields.io/badge/Python-3.6%2B-blue?logo=python&logoColor=white)
-![Storage](https://img.shields.io/badge/Storage-CSV-green)
-![Interface](https://img.shields.io/badge/Interface-CLI-lightgrey)
-![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library-success)
+![Java](https://img.shields.io/badge/Java-Programming-orange?logo=openjdk&logoColor=white)
+![Interface](https://img.shields.io/badge/Interface-CLI-blue)
+![Storage](https://img.shields.io/badge/Storage-In--Memory-lightgrey)
+![Dependencies](https://img.shields.io/badge/Dependencies-Java%20Standard%20Library-green)
 ![License](https://img.shields.io/badge/License-Not%20Specified-lightgrey)
 
 ## 📑 Table of Contents
@@ -14,12 +14,12 @@
 - [Features](#-features)
 - [Architecture](#-architecture)
 - [Tech Stack](#-tech-stack)
-- [Scope and Objectives](#-scope-and-objectives)
+- [Project Objectives and Scope](#-project-objectives-and-scope)
 - [Project Structure](#-project-structure)
 - [Prerequisites](#-prerequisites)
 - [Installation and Setup](#-installation-and-setup)
-- [Usage](#-usage)
-- [Data Storage](#-data-storage)
+- [Usage Guide](#-usage-guide)
+- [Transaction History and Data Persistence](#-transaction-history-and-data-persistence)
 - [Limitations and Future Enhancements](#-limitations-and-future-enhancements)
 - [Contributing](#-contributing)
 - [License](#-license)
@@ -29,306 +29,378 @@
 
 ### Why
 
-Maintaining student information manually can make it difficult to organize records, locate specific students, and keep information up to date. This project provides a straightforward way to manage student records through a command-line interface without requiring a database server or third-party packages.
+Managing account balances and tracking banking operations requires consistent handling of deposits, withdrawals, and account information. This project demonstrates how these operations can be modeled using object-oriented programming in Java.
 
 ### What
 
-The Student Management System is a Python application that stores student information in a CSV file and provides basic record management functionality.
+BANK-BUDDY is a command-line banking simulation that allows users to create multiple account objects, inspect account information, perform balance operations, lock or unlock accounts, calculate interest, and review transaction history.
 
 ### How
 
-The application follows a simple file-based workflow:
+The application follows an object-oriented, in-memory processing model:
 
-1. Users select an operation from the interactive command-line menu.
-2. Python collects the required student information or search criteria.
-3. The application reads or updates records in `students.csv`.
-4. Changes are written to the CSV file when records are added, updated, or deleted.
-5. Users receive a message indicating the result of the operation.
+1. **Initialization:** The user specifies the number of depositors and enters their account details.
+2. **Account creation:** Java creates a `BankAccount` object for each depositor.
+3. **Operation selection:** An interactive menu allows the user to select an account operation.
+4. **Business logic:** The corresponding method validates certain conditions and updates the account object.
+5. **Feedback:** The application displays the result in the terminal and updates the in-memory transaction history where implemented.
 
 ### To Whom
 
 This project is suitable for:
 
-- Students learning Python programming.
-- Beginners practicing file handling and CSV operations.
-- Developers exploring command-line application design.
-- Small-scale demonstrations of basic student record management.
+- Students learning Java and object-oriented programming.
+- Beginners practicing classes, constructors, objects, and methods.
+- Developers exploring menu-driven command-line applications.
+- Learners studying basic banking operations and state management.
 
 ## ✨ Features
 
-- **Add Student:** Enter and save a new student record.
-- **View Students:** Display saved records in a column-aligned terminal output.
-- **Search Student:** Find a student by ID.
-- **Update Student:** Modify an existing student's information while retaining current values for fields left blank.
-- **Delete Student:** Remove a record using its ID.
-- **Interactive Menu:** Navigate the available operations through numbered choices.
-- **Persistent Storage:** Save records in a CSV file so changes remain available between application runs.
+- **Account Management:** Create account objects with a generated account identifier, holder name, address, account type, and opening balance.
+- **Balance Inquiry:** Display account information, including the current balance and account status.
+- **Deposits and Withdrawals:** Credit or debit account balances with basic insufficient-balance checking for withdrawals.
+- **Account Locking:** Lock an account to prevent deposits, withdrawals, and address modifications through the corresponding methods.
+- **Interest Calculation:** Calculate interest using a supplied percentage rate and credit the result to the account balance.
+- **Address Management:** Update an account holder's address.
+- **Transaction History:** Record supported operations in an in-memory list and display the recorded entries.
+- **Transaction Counter:** Display the total count maintained for successful deposits and withdrawals.
+- **Interactive Menu:** Navigate the available operations through numbered terminal options.
 
 ## 🏗️ Architecture
 
-The application uses a monolithic, single-script architecture with local file storage.
+BANK-BUDDY uses a simple, single-class application architecture.
 
 ```text
-             User
-              |
-              v
-       Command-Line Menu
-              |
-              v
-          student.py
-              |
-       +------+------+------+------+
-       |      |      |      |      |
-       v      v      v      v      v
-      Add    View  Search Update Delete
-       |      |      |      |      |
-       +------+------+------+------+
-                     |
-                     v
-                 students.csv
-                     |
-                     v
-             Persistent Records
+              User
+               |
+               v
+        Command-Line Input
+               |
+               v
+       BankAccount.main()
+               |
+               v
+       Create Account Objects
+               |
+               v
+         Interactive Menu
+               |
+       +-------+--------+
+       |       |        |
+       v       v        v
+    Deposit  Withdraw  Account Controls
+       |       |        |
+       +-------+--------+
+               |
+               v
+       Update Account State
+               |
+        +------+------+
+        |             |
+        v             v
+   Account Balance  Transaction History
+        |             |
+        +------+------+
+               |
+               v
+         Terminal Output
 ```
 
 ### Core Components
 
 | Component | Responsibility |
 |---|---|
-| `display_menu()` | Displays available operations |
-| `add_student()` | Collects student information and appends a CSV row |
-| `view_students()` | Reads and displays stored student records |
-| `search_student()` | Searches records by student ID |
-| `update_student()` | Updates a matching record and rewrites the CSV file |
-| `delete_student()` | Removes a matching record and rewrites the CSV file |
-| Main menu loop | Dispatches user selections and exits when requested |
+| `BankAccount` | Represents a bank account and its associated state |
+| Constructor | Initializes account details and the opening balance |
+| `generateUID()` | Generates account identifiers using the `BA` prefix |
+| `display()` | Prints account information and account status |
+| `deposit()` | Adds an amount to the balance |
+| `withdraw()` | Checks available funds and processes withdrawals |
+| `changeAddress()` | Updates the account holder's address |
+| `lockAccount()` / `unlockAccount()` | Change the account's lock status |
+| `calculateInterest()` | Calculates and credits interest |
+| `printTransactionHistory()` | Displays recorded account events |
+| `main()` | Initializes accounts and manages the interactive menu |
 
 ## 🛠️ Tech Stack
 
-![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
-![CSV](https://img.shields.io/badge/Data%20Format-CSV-217346?style=flat)
-![Terminal](https://img.shields.io/badge/Interface-Command%20Line-black?style=flat)
+![Java](https://img.shields.io/badge/Java-ED8B00?style=flat&logo=openjdk&logoColor=white)
+![OOP](https://img.shields.io/badge/Paradigm-Object--Oriented-blue)
+![CLI](https://img.shields.io/badge/Interface-Command--Line-lightgrey)
 
 | Technology | Purpose |
 |---|---|
-| Python | Application logic and user interaction |
-| `csv` module | Reading and writing structured records |
-| File I/O | Persistent local data storage |
-| Command-line interface | Menu navigation and input collection |
+| Java | Implements account management and transaction logic |
+| Java Standard Library | Provides console input, collections, and basic utilities |
+| `Scanner` | Reads user input from the terminal |
+| `ArrayList` | Stores transaction history in memory |
+| Object-oriented programming | Encapsulates account data and operations in a class |
+| Java compiler (`javac`) | Compiles the source code |
+| Java runtime (`java`) | Executes the compiled application |
 
-The application uses Python's standard library and does not require an external package installation.
+The application does not require a database, external dependencies, Maven, or Gradle for its current implementation.
 
-## 🎯 Scope and Objectives
+## 🎯 Project Objectives and Scope
 
 ### Objectives
 
-- Implement basic student record management operations.
-- Demonstrate Python functions, loops, conditionals, and user input.
-- Practice reading and writing CSV files.
-- Provide a persistent storage mechanism without a database server.
-- Keep the application simple to run and understand.
+- Demonstrate object-oriented programming concepts in Java.
+- Model banking accounts as objects with mutable state.
+- Implement basic deposit and withdrawal operations.
+- Provide account locking and unlocking functionality.
+- Demonstrate simple interest calculations.
+- Maintain an in-memory history of account events.
+- Provide a user-friendly, menu-driven terminal interface.
 
 ### In Scope
 
-- Adding, viewing, searching, updating, and deleting student records.
-- Searching by student ID.
-- Storing student information in a local CSV file.
-- Interactive terminal-based operation.
+- Creating multiple account objects during program initialization.
+- Displaying account details.
+- Deposits and withdrawals.
+- Updating account addresses.
+- Locking and unlocking accounts.
+- Calculating and crediting interest.
+- Displaying transaction counts and histories.
 
 ### Out of Scope
 
-- Web-based or graphical user interfaces.
-- User authentication and role-based access.
-- Cloud storage and multi-user collaboration.
-- Database-backed transactions.
-- Automated report generation.
-- Advanced search, filtering, and pagination.
+The current implementation does not provide:
+
+- Persistent database or file storage.
+- User authentication or PIN verification.
+- Real bank integrations or actual money transfers.
+- Inter-account transfers.
+- Multi-user concurrency.
+- Formal accounting or audit-grade transaction records.
+- Production-grade financial security.
 
 ## 📂 Project Structure
 
 ```text
-STUDENT-MANAGEMENT-SYSTEM/
-├── student.py       # Main application and CRUD operations
-├── students.csv     # Student record storage
-└── .gitattributes   # Git file handling configuration
+BANK-BUDDY/
+├── BankAccount.java    # Account model, operations, and main menu
+├── com/
+│   └── ace/            # Java package directory, if used by the checkout
+└── .gitattributes      # Git file handling configuration
 ```
 
-### File Responsibilities
-
-- **`student.py`** — Defines the student fields, displays the menu, and implements record operations.
-- **`students.csv`** — Stores student records in comma-separated format.
-- **`.gitattributes`** — Configures Git handling for repository files.
+The Java source declares the package `com.ace`. The compiler's `-d` option can generate the appropriate package directory structure when compiling from the repository root.
 
 ## 💻 Prerequisites
 
-- Python 3.6 or later.
-- Git, if cloning the repository.
+- **JDK 8 or later** is a reasonable baseline for this source code.
 - A terminal or command prompt.
+- Git, if you want to clone the repository.
 
-No database, web server, virtual environment, or third-party Python package is required.
+Verify the Java installation:
+
+```bash
+java -version
+javac -version
+```
+
+Both commands should report an available Java runtime and compiler.
 
 ## ⚙️ Installation and Setup
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/pratikabhang/STUDENT-MANAGEMENT-SYSTEM.git
+git clone https://github.com/pratikabhang/BANK-BUDDY.git
+cd BANK-BUDDY
 ```
 
-### 2. Navigate to the Project Directory
+### 2. Compile the Java Source
+
+From the repository root, run:
 
 ```bash
-cd STUDENT-MANAGEMENT-SYSTEM
+javac -d . BankAccount.java
 ```
 
-### 3. Verify Python Installation
+The `-d .` option instructs the compiler to place generated class files under the appropriate package directory.
+
+If your checkout places the source file under `com/ace/`, compile using its actual path instead:
 
 ```bash
-python --version
+javac -d . com/ace/BankAccount.java
 ```
 
-If your system uses `python3`, run:
+Use the command that matches the file location in your local checkout.
+
+### 3. Run the Application
+
+Because the source declares `package com.ace`, launch it using its fully qualified class name:
 
 ```bash
-python3 --version
+java com.ace.BankAccount
 ```
 
-### 4. Run the Application
+The application will prompt you to enter the number of depositors and their account details.
 
-On Windows:
+No dependency installation or environment variable configuration is required.
 
-```bash
-python student.py
-```
+## ▶️ Usage Guide
 
-On macOS or Linux:
+### 1. Initialize Accounts
 
-```bash
-python3 student.py
-```
+When the program starts, enter the number of depositors.
 
-The application displays the interactive menu in the terminal.
+For each account, provide:
 
-**No build step or dependency installation is necessary.**
+- Account holder's name
+- Account type
+- Address or city
+- Opening balance
 
-## ▶️ Usage
+The application creates an account object for each depositor and assigns a generated account identifier.
 
-After starting the program, the following menu is displayed:
+### 2. Select an Operation
+
+The menu provides the following options:
+
+| Option | Operation |
+|---:|---|
+| 1 | Print information for a depositor |
+| 2 | Deposit money |
+| 3 | Withdraw money |
+| 4 | Change address |
+| 5 | Lock account |
+| 6 | Unlock account |
+| 7 | Calculate interest |
+| 8 | Print the total transaction count |
+| 9 | Print transaction history |
+| 10 | Exit |
+
+Enter the relevant number and follow the prompts.
+
+### 3. Example Session
+
+The following is an illustrative interaction:
 
 ```text
---------------------------------------
- Welcome to Student Management System
---------------------------------------
-1. Add New Student
-2. View Students
-3. Search Student
-4. Update Student
-5. Delete Student
-6. Quit
+Enter Number of depositors: 1
+
+Enter Information for Depositor no. 1
+Enter name: Rahul
+Type of Account: Savings
+Enter City: Pune
+Enter Balance: ₹5000
+
+MENU FOR ACCOUNT
+1. Print information of any depositor
+2. Add amount to the account of any depositor
+3. Remove some amount from account of any depositor
+4. Change Address of any depositor
+5. Lock account
+6. Unlock account
+7. Calculate interest
+8. Print total number of transactions
+9. Print transaction history
+10. Stop
+
+Enter your Choice: 1
+Depositor no.: 1
 ```
 
-Enter the number corresponding to the operation you want to perform.
+The generated account identifier begins with `BA`, followed by a sequential number beginning at `1000`.
 
-### 1. Add a Student
+### 4. Deposit Money
 
-Select option `1` and provide the requested fields:
+Choose option `2`, select a depositor, and enter the deposit amount.
 
-- ID
-- Name
-- Age
-- Email
-- Phone
-- City
+The application increases the account balance and records a deposit entry in the transaction history.
 
-The application appends the entered record to `students.csv`.
+### 5. Withdraw Money
 
-### 2. View Students
+Choose option `3`, select a depositor, and enter the withdrawal amount.
 
-Select option `2` to display the records currently stored in the CSV file.
+The application checks whether the requested amount exceeds the available balance. If sufficient funds are available, it reduces the balance and records the withdrawal.
 
-### 3. Search for a Student
+### 6. Lock or Unlock an Account
 
-Select option `3` and enter the student's ID.
+- Choose option `5` to lock an account.
+- Choose option `6` to unlock an account.
 
-The application searches the CSV records and displays the matching student's details, if found.
+The account status is reflected in the account information display.
 
-### 4. Update a Student
+Locked accounts are prevented from depositing, withdrawing, and changing their address through the respective methods.
 
-Select option `4` and enter the ID of the student to update.
+### 7. Calculate Interest
 
-For each field, enter a new value or press Enter to retain the existing value.
+Choose option `7`, select a depositor, and enter the interest rate as a percentage.
 
-### 5. Delete a Student
+For example, with a balance of ₹5,000 and a rate of 5%:
 
-Select option `5` and enter the ID of the student to remove.
+\[
+\text{Interest} = \frac{5000 \times 5}{100} = ₹250
+\]
 
-The application rewrites the CSV file without the matching record.
+The resulting balance becomes ₹5,250.
 
-### 6. Quit
+This is a simple percentage calculation, not a time-based interest model. The current implementation does not apply compounding or calculate interest over a specified period.
 
-Select option `6` to exit the application.
+### 8. View Transaction History
 
-## 💾 Data Storage
+Choose option `9` and select the depositor whose history you want to inspect.
 
-Student records are stored locally in `students.csv`.
+The application prints the events recorded in that account's transaction history.
 
-### Expected Record Structure
+## 💾 Transaction History and Data Persistence
 
-The application defines six fields:
+The application uses Java objects and an `ArrayList<String>` to store transaction history.
 
-| Field | Description |
-|---|---|
-| `ID` | Student identifier |
-| `Name` | Student's name |
-| `Age` | Student's age |
-| `Email` | Student's email address |
-| `Phone` | Student's phone number |
-| `City` | Student's city |
+The following events are recorded by the corresponding methods:
 
-### Example CSV Format
+- Deposits
+- Successful withdrawals
+- Address changes
+- Account locking and unlocking
+- Interest credits
 
-```csv
-ID,Name,Age,Email,Phone,City
-1001,Alex,20,alex@example.com,9876543210,Pune
-1002,Jordan,21,jordan@example.com,9876543211,Mumbai
-```
+The static transaction counter tracks successful deposits and withdrawals. It does not represent every event in the transaction history.
 
-The entries above are illustrative examples, not actual repository records.
+**Important limitations:**
 
-### Persistence Behavior
-
-- New records are appended to the CSV file.
-- Existing records are read from the file for viewing and searching.
-- Updates and deletions rewrite the file with the remaining or modified records.
-- Data remains on the local filesystem between application runs.
-
-**Important:** Keep the CSV structure consistent with the six fields defined in `student.py`. Existing data with extra columns may cause issues in operations such as updating records.
+- Account balances and transaction histories exist only in memory.
+- All accounts are lost when the program terminates.
+- Account identifiers restart from the initial counter when the application is restarted.
+- Transaction history is not saved to a file or database.
+- Monetary values use Java `double`, which is not appropriate for production-grade financial calculations where exact decimal arithmetic is required.
 
 ## 🔮 Limitations and Future Enhancements
 
 Potential improvements include:
 
-- Validate student IDs and prevent duplicate entries.
-- Validate age, email, and phone number formats.
-- Handle missing, empty, or malformed CSV files safely.
-- Ensure CSV records consistently match the expected field count.
-- Add confirmation before deleting a student.
-- Add unit tests for record operations.
-- Separate business logic, storage, and user interface into modules.
-- Introduce SQLite or another database for more robust persistence.
-- Add sorting, filtering, and export functionality.
-- Develop a web interface for broader accessibility.
+- Validate all numeric inputs and handle invalid input without terminating the application.
+- Reject zero or negative deposit and withdrawal amounts.
+- Use `BigDecimal` for precise monetary calculations.
+- Prevent interest calculations on locked accounts if that matches the intended business rules.
+- Separate account selection from internal array positions.
+- Persist account data in a database or file.
+- Save transaction records with timestamps and unique transaction IDs.
+- Add authentication and account-owner authorization.
+- Support transfers between accounts with atomic debit and credit operations.
+- Add automated unit tests for account operations.
+- Separate the application into model, service, and user-interface classes.
+- Improve transaction counting and distinguish successful operations from other account events.
 
-These are proposed enhancements and are not part of the current feature set.
+These are proposed enhancements and are not implemented features.
 
 ## 🤝 Contributing
 
-Contributions, bug reports, and improvement suggestions are welcome.
+Contributions, bug reports, and suggestions are welcome.
 
 ### Contribution Workflow
 
 1. Fork the repository.
-2. Clone your fork.
+2. Clone your fork:
+
+   ```bash
+   git clone https://github.com/<your-username>/BANK-BUDDY.git
+   cd BANK-BUDDY
+   ```
+
 3. Create a feature branch:
 
    ```bash
@@ -336,12 +408,12 @@ Contributions, bug reports, and improvement suggestions are welcome.
    ```
 
 4. Implement your changes.
-5. Test the affected operations manually.
+5. Compile the project and test the affected operations.
 6. Commit your changes:
 
    ```bash
-   git add student.py
-   git commit -m "Improve student record handling"
+   git add BankAccount.java
+   git commit -m "Improve account transaction handling"
    ```
 
 7. Push your branch:
@@ -350,31 +422,32 @@ Contributions, bug reports, and improvement suggestions are welcome.
    git push origin feature/your-feature-name
    ```
 
-8. Open a pull request against the original repository.
+8. Open a pull request describing your changes and the tests performed.
 
-### Guidelines
+### Contribution Guidelines
 
-- Follow standard Python naming conventions.
-- Keep functions focused and readable.
-- Handle invalid input and file errors appropriately.
-- Test add, view, search, update, and delete operations.
-- Avoid committing private student information or other sensitive data.
+- Follow standard Java naming conventions.
+- Keep methods focused and maintainable.
+- Validate user input and account operations.
+- Avoid committing sensitive information.
+- Include test cases for new behavior.
+- Update this README when functionality or setup requirements change.
 
 ## 📄 License
 
-No `LICENSE` file is listed in the current repository. The project's license is therefore **not specified**.
+No `LICENSE` file is listed in the current repository root. The project's license is therefore **not specified**.
 
-Before distributing or reusing the code, add an appropriate license file and update this section with the correct license terms.
+Add an appropriate license file before distributing or reusing the project under specific license terms.
 
 ## 👨‍💻 Author
 
 **Pratik Abhang**
 
 - GitHub: [@pratikabhang](https://github.com/pratikabhang)
-- Repository: [STUDENT-MANAGEMENT-SYSTEM](https://github.com/pratikabhang/STUDENT-MANAGEMENT-SYSTEM)
+- Repository: [BANK-BUDDY](https://github.com/pratikabhang/BANK-BUDDY)
 
 ---
 
 ⭐ If you find this project useful, consider starring the repository.
 
-*Built with Python and CSV file handling.*
+*Built with Java and object-oriented programming.*
